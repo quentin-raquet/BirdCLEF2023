@@ -1,0 +1,81 @@
+test:
+  datamodule:
+    metadata_path: data/train_metadata_sample.csv
+    train_dir: data/train_audio/
+    valid_size: 0.15
+    batch_size: 3
+    num_workers: 1
+    nb_samples: 5
+    resample_freq: 32000
+    duration: 5
+    n_fft: 2048
+    n_mels: 128
+    hop_length: 512
+    top_db: 80
+  model:
+    num_classes: 264
+    learning_rate: 0.001
+    lr_step_size: 20
+    lr_gamma: 0.5
+    model_name: tf_efficientnet_b0_ns
+    pretrained: False
+    drop_rate: 0.2
+    use_mixup: True
+    alpha_mixup: 0.2
+  trainer:
+    device_type: cpu
+    devices: 1
+    max_epochs: 3
+    early_stopping_metric: val_map
+    patience: 10
+    default_dir: logs/
+  predict:
+    model_path: model/
+    predict_dir: data/test_soundscapes/
+    batch_size: 3
+    num_workers: 1
+
+databricks:
+  datamodule:
+    metadata_path: /dbfs/FileStore/tables/rhamez/bird/train_metadata.csv
+    train_dir: /dbfs/FileStore/tables/rhamez/bird/train_audio/
+    valid_size: 0.15
+    batch_size: 32
+    num_workers: 10
+    nb_samples: 5
+    resample_freq: 32000
+    duration: 5
+    n_fft: 2048
+    n_mels: 128
+    hop_length: 512
+    top_db: 80
+  model:
+    num_classes: 264
+    learning_rate: 0.0005
+    lr_step_size: 20
+    lr_gamma: 0.5
+    model_name: tf_efficientnet_b0_ns
+    pretrained: True
+    drop_rate: 0.2
+    use_mixup: True
+    alpha_mixup: 0.2
+  trainer:
+    device_type: gpu
+    devices: 8
+    max_epochs: 150
+    early_stopping_metric: val_map
+    patience: 10
+    default_dir: /dbfs/FileStore/tables/rhamez/bird/logs/
+    mlflow_experiment_name: /Users/qraquet@expediagroup.com/bird/bird_training
+  predict:
+    model_path: /dbfs/FileStore/tables/rhamez/bird/model/
+    predict_dir: /dbfs/FileStore/tables/rhamez/bird/test_soundscapes/
+    batch_size: 32
+    num_workers: 1
+
+kaggle:
+  predict:
+    model_path: /kaggle/bird-repo/BirdCLEF2023/model/
+    predict_dir: /kaggle/input/birdclef-2023/test_soundscapes/
+    batch_size: 1
+    num_workers: 1
